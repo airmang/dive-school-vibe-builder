@@ -1,71 +1,45 @@
 #!/usr/bin/env node
-/** Minimal dependency-free structure checks for this distribution. */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parsePlan, REQUIRED_TASKS, VERSION } from '../skills/school-vibe-builder/scripts/harness.mjs';
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const skill = path.join(root, 'skills/school-vibe-builder');
-const errors = [];
-function check(condition, message) { if (!condition) errors.push(message); }
-function read(relative) { return fs.readFileSync(path.join(root, relative), 'utf8'); }
-
-const required = [
-  'README.md', 'START_HERE.md', 'AGENTS.md', 'LICENSE', 'SECURITY.md', 'CHANGELOG.md',
-  'package.json', '.gitignore', '.gitattributes', 'scripts/install.mjs',
-  'scripts/verify-package.mjs', 'tests/harness.test.mjs', 'docs/facilitator-guide.md',
-  'docs/publishing-guide.md', 'docs/testing-report.md',
-  'skills/school-vibe-builder/SKILL.md', 'skills/school-vibe-builder/agents/openai.yaml',
-  'skills/school-vibe-builder/scripts/harness.mjs',
-];
-for (const relative of required) check(fs.existsSync(path.join(root, relative)), `Required file missing: ${relative}`);
-const skillText = fs.readFileSync(path.join(skill, 'SKILL.md'), 'utf8');
-check(skillText.startsWith('---\n'), 'SKILL.md front matter must begin at first line.');
-const front = skillText.split('---\n')[1] ?? '';
-check(/^name: school-vibe-builder$/m.test(front), 'Skill name must match folder.');
-check(/^description: .+$/m.test(front), 'Skill description missing.');
-check(skillText.split('\n').length < 500, 'SKILL.md should be under 500 lines.');
-const yaml = fs.readFileSync(path.join(skill, 'agents/openai.yaml'), 'utf8');
-check(/^interface:/m.test(yaml), 'Interface metadata missing.');
-check(/default_prompt: .*\$school-vibe-builder/.test(yaml), 'Default prompt must invoke the skill.');
-check(/allow_implicit_invocation: true/.test(yaml), 'Invocation policy missing.');
-const metadata = JSON.parse(read('package.json'));
-check(metadata.version === VERSION, 'Version mismatch.');
-check(!metadata.dependencies && !metadata.devDependencies, 'Distribution must remain dependency-free.');
-const plan = fs.readFileSync(path.join(skill, 'assets/templates/PLAN.md'), 'utf8');
-check(JSON.stringify(parsePlan(plan).tasks.map((t) => t.id)) === JSON.stringify(REQUIRED_TASKS), 'PLAN template and required IDs differ.');
-for (const profile of ['calendar', 'admissions', 'counseling', 'custom']) {
-  const data = JSON.parse(fs.readFileSync(path.join(skill, 'assets/profiles', `${profile}.json`), 'utf8'));
-  for (const key of ['GOAL', 'USERS', 'MVP', 'FIELDS', 'ACCESS_MATRIX', 'ACCEPTANCE']) check(Boolean(data[key]), `${profile} lacks ${key}`);
+import { VERSION, parsePlan } from '../skills/dive-builder/scripts/harness.mjs';
+import { BUNDLE } from './install.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const errors=[];
+function check(ok,msg){if(!ok)errors.push(msg);}
+function read(p){return fs.readFileSync(path.join(root,p),'utf8');}
+for(const p of ['README.md','START_HERE.md','AGENTS.md','LICENSE','SECURITY.md','CHANGELOG.md','.gitignore','.gitattributes','docs/migration-v0.2.md','docs/testing-report.md'])check(fs.existsSync(path.join(root,p)),`Missing: ${p}`);
+for(const name of BUNDLE){
+  const p=`skills/${name}`;
+  const skill=read(`${p}/SKILL.md`);
+  check(skill.startsWith('---\n'),`${name}: missing front matter`);
+  check(new RegExp(`^name: ${name}$`,'m').test(skill),`${name}: wrong name`);
+  check(/^description: .+$/m.test(skill),`${name}: no description`);
+  check(skill.split('\n').length<500,`${name}: SKILL too long`);
+  check(read(`${p}/agents/openai.yaml`).includes(`$${name}`),`${name}: default prompt`);
 }
-const files = [];
-function walk(folder) {
-  for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
-    if (['.git', 'node_modules'].includes(entry.name)) continue;
-    const full = path.join(folder, entry.name);
-    check(!entry.isSymbolicLink(), `Symlink found: ${path.relative(root, full)}`);
-    if (entry.isDirectory()) walk(full);
-    else if (entry.isFile()) files.push(full);
-  }
-}
+check(/allow_implicit_invocation: false/.test(read('skills/school-vibe-builder/agents/openai.yaml')),'Alias must be explicit-only');
+const pkg=JSON.parse(read('package.json'));
+check(pkg.version===VERSION,'Version mismatch');
+check(!pkg.dependencies&&!pkg.devDependencies,'Must remain dependency-free');
+const ids=JSON.parse(read('skills/dive-webapp/assets/required-tasks.json'));
+check(JSON.stringify(parsePlan(read('skills/dive-webapp/assets/PLAN.md')).tasks.map(t=>t.id))===JSON.stringify(ids),'Webapp plan / task IDs mismatch');
+check(!/Supabase|Vercel|Next\.js/.test(read('skills/dive-builder/assets/templates/PLAN.md')),'General plan must not require web stack');
+const files=[];
+function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){
+  if(['.git','node_modules'].includes(e.name))continue;
+  const f=path.join(dir,e.name);check(!e.isSymbolicLink(),`Symlink: ${f}`);
+  if(e.isDirectory())walk(f);else if(e.isFile())files.push(f);
+}}
 walk(root);
-for (const file of files.filter((f) => f.endsWith('.md'))) {
-  const text = fs.readFileSync(file, 'utf8');
-  check(!text.includes('\uFFFD'), `Invalid encoding marker: ${path.relative(root, file)}`);
-  const fences = text.split('\n').filter((line) => line.trimStart().startsWith('```')).length;
-  check(fences % 2 === 0, `Unbalanced code fence: ${path.relative(root, file)}`);
-  for (const match of text.matchAll(/\[[^\]\n]+\]\(([^)\n]+)\)/g)) {
-    const target = match[1];
-    if (/^(?:https?:|mailto:|#)/.test(target)) continue;
-    const destination = path.resolve(path.dirname(file), target.split('#')[0]);
-    check(fs.existsSync(destination), `Broken local link in ${path.relative(root, file)}: ${target}`);
+for(const file of files.filter(f=>f.endsWith('.md'))){
+  const text=fs.readFileSync(file,'utf8');
+  check(!text.includes('\uFFFD'),`Encoding: ${file}`);
+  check(text.split('\n').filter(l=>l.trimStart().startsWith('```')).length%2===0,`Unbalanced fence: ${file}`);
+  for(const m of text.matchAll(/\[[^\]\n]+\]\(([^)\n]+)\)/g)){
+    if(/^(https?:|mailto:|#)/.test(m[1]))continue;
+    check(fs.existsSync(path.resolve(path.dirname(file),m[1].split('#')[0])),`Broken link ${path.relative(root,file)}: ${m[1]}`);
   }
 }
-if (errors.length) {
-  for (const error of errors) console.error(`ERROR: ${error}`);
-  process.exitCode = 1;
-} else {
-  console.log(`PASS: ${files.length} files; skill metadata, profiles, 29 task IDs, versions, local links, fences, UTF-8 basics.`);
-  console.log('This is structural validation, not an end-to-end Codex/cloud test.');
-}
+if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}
+else console.log(`PASS: ${files.length} files, 3 skill entries, versions, webapp IDs, neutral general template, local links and fences.\nStructural validation only; no Codex/cloud end-to-end claim.`);

@@ -1,0 +1,6 @@
+interface:
+  display_name: "DIVE 개발 도우미"
+  short_description: "아이디어부터 구현·검증·오류 해결·재개까지 돕는 범용 개발 파트너"
+  default_prompt: "$dive-builder로 프로젝트를 도와줘. 필요한 것부터 정리하고 작은 단위로 구현·검증해줘."
+policy:
+  allow_implicit_invocation: true

@@ -1,6 +1,6 @@
 interface:
-  display_name: "School Vibe Builder"
-  short_description: "교사의 앱 아이디어를 인터뷰부터 검증·배포까지 단계별로 관리"
-  default_prompt: "$school-vibe-builder로 학교 업무 앱을 만들고 싶어. 먼저 아이디어를 구체화하고 계획 파일을 만들어줘."
+  display_name: "School Vibe Builder (이전 이름)"
+  short_description: "기존 호출을 DIVE 공통 하네스와 웹앱 모드로 연결"
+  default_prompt: "$school-vibe-builder로 기존 프로젝트를 이어서 도와줘."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false
