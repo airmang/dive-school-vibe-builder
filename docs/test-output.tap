@@ -1,0 +1,280 @@
+TAP version 13
+# Subtest: initialization creates exactly five learner files with Korean content
+ok 1 - initialization creates exactly five learner files with Korean content
+  ---
+  duration_ms: 6.299149
+  type: 'test'
+  ...
+# Subtest: all four profiles render without unresolved template tokens
+ok 2 - all four profiles render without unresolved template tokens
+  ---
+  duration_ms: 5.8582
+  type: 'test'
+  ...
+# Subtest: draft plan contains every required task exactly once
+ok 3 - draft plan contains every required task exactly once
+  ---
+  duration_ms: 2.07245
+  type: 'test'
+  ...
+# Subtest: dry-run initialization does not create any project directory
+ok 4 - dry-run initialization does not create any project directory
+  ---
+  duration_ms: 1.675936
+  type: 'test'
+  ...
+# Subtest: invalid profile fails before writing files
+ok 5 - invalid profile fails before writing files
+  ---
+  duration_ms: 0.949807
+  type: 'test'
+  ...
+# Subtest: invalid project name fails before writing files
+ok 6 - invalid project name fails before writing files
+  ---
+  duration_ms: 0.593192
+  type: 'test'
+  ...
+# Subtest: existing PROJECT or PLAN prevents all reinitialization writes
+ok 7 - existing PROJECT or PLAN prevents all reinitialization writes
+  ---
+  duration_ms: 2.148341
+  type: 'test'
+  ...
+# Subtest: an existing PLAN alone is not overwritten and nothing else is created
+ok 8 - an existing PLAN alone is not overwritten and nothing else is created
+  ---
+  duration_ms: 0.725388
+  type: 'test'
+  ...
+# Subtest: existing AGENTS and ignore files remain unchanged
+ok 9 - existing AGENTS and ignore files remain unchanged
+  ---
+  duration_ms: 1.660503
+  type: 'test'
+  ...
+# Subtest: existing proposed AGENTS prevents partial file creation
+ok 10 - existing proposed AGENTS prevents partial file creation
+  ---
+  duration_ms: 1.021313
+  type: 'test'
+  ...
+# Subtest: distribution repository cannot be used as a learner application
+ok 11 - distribution repository cannot be used as a learner application
+  ---
+  duration_ms: 0.200064
+  type: 'test'
+  ...
+# Subtest: filesystem root and home root are rejected
+ok 12 - filesystem root and home root are rejected
+  ---
+  duration_ms: 0.180475
+  type: 'test'
+  ...
+# Subtest: symlinked project directories are rejected
+ok 13 - symlinked project directories are rejected
+  ---
+  duration_ms: 0.452036
+  type: 'test'
+  ...
+# Subtest: symlinked AGENTS files are rejected without writing the target
+ok 14 - symlinked AGENTS files are rejected without writing the target
+  ---
+  duration_ms: 0.849661
+  type: 'test'
+  ...
+# Subtest: status distinguishes done, in-progress, blocked and next action
+ok 15 - status distinguishes done, in-progress, blocked and next action
+  ---
+  duration_ms: 2.172286
+  type: 'test'
+  ...
+# Subtest: status requires an existing PLAN
+ok 16 - status requires an existing PLAN
+  ---
+  duration_ms: 0.725948
+  type: 'test'
+  ...
+# Subtest: fresh draft passes document preflight without claiming workflow completion
+ok 17 - fresh draft passes document preflight without claiming workflow completion
+  ---
+  duration_ms: 6.38145
+  type: 'test'
+  ...
+# Subtest: status and check are read-only for project files
+ok 18 - status and check are read-only for project files
+  ---
+  duration_ms: 4.033405
+  type: 'test'
+  ...
+# Subtest: completed checkbox without evidence is blocked
+ok 19 - completed checkbox without evidence is blocked
+  ---
+  duration_ms: 4.138359
+  type: 'test'
+  ...
+# Subtest: manual evidence with an ISO time is accepted as recorded manual evidence
+ok 20 - manual evidence with an ISO time is accepted as recorded manual evidence
+  ---
+  duration_ms: 4.737131
+  type: 'test'
+  ...
+# Subtest: placeholder or invalid-date evidence does not validate a checkbox
+ok 21 - placeholder or invalid-date evidence does not validate a checkbox
+  ---
+  duration_ms: 6.630516
+  type: 'test'
+  ...
+# Subtest: deleting a required security task cannot bypass preflight
+ok 22 - deleting a required security task cannot bypass preflight
+  ---
+  duration_ms: 4.025162
+  type: 'test'
+  ...
+# Subtest: duplicate task IDs are rejected
+ok 23 - duplicate task IDs are rejected
+  ---
+  duration_ms: 4.140963
+  type: 'test'
+  ...
+# Subtest: fresh draft fails prepush and release gates
+ok 24 - fresh draft fails prepush and release gates
+  ---
+  duration_ms: 5.746125
+  type: 'test'
+  ...
+# Subtest: prepush accepts complete stage 0-5 records with Git protections
+ok 25 - prepush accepts complete stage 0-5 records with Git protections
+  ---
+  duration_ms: 21.154627
+  type: 'test'
+  ...
+# Subtest: release checks sharing readiness without circularly requiring sharing itself
+ok 26 - release checks sharing readiness without circularly requiring sharing itself
+  ---
+  duration_ms: 21.5575
+  type: 'test'
+  ...
+# Subtest: tracked environment files are flagged without printing their values
+ok 27 - tracked environment files are flagged without printing their values
+  ---
+  duration_ms: 27.17133
+  type: 'test'
+  ...
+# Subtest: ignored .env contents are not opened or scanned
+ok 28 - ignored .env contents are not opened or scanned
+  ---
+  duration_ms: 23.572455
+  type: 'test'
+  ...
+# Subtest: already tracked student-data paths are blocked
+ok 29 - already tracked student-data paths are blocked
+  ---
+  duration_ms: 25.375639
+  type: 'test'
+  ...
+# Subtest: an ineffective .gitignore is detected using actual Git behavior
+ok 30 - an ineffective .gitignore is detected using actual Git behavior
+  ---
+  duration_ms: 23.685091
+  type: 'test'
+  ...
+# Subtest: environment example values must remain empty
+ok 31 - environment example values must remain empty
+  ---
+  duration_ms: 3.762185
+  type: 'test'
+  ...
+# Subtest: source secret findings are redacted and include file and line
+ok 32 - source secret findings are redacted and include file and line
+  ---
+  duration_ms: 4.365223
+  type: 'test'
+  ...
+# Subtest: publishable keys are not treated as service secrets
+ok 33 - publishable keys are not treated as service secrets
+  ---
+  duration_ms: 0.094749
+  type: 'test'
+  ...
+# Subtest: legacy service-role JWTs are detected but anon-role JWTs are not
+ok 34 - legacy service-role JWTs are detected but anon-role JWTs are not
+  ---
+  duration_ms: 0.207065
+  type: 'test'
+  ...
+# Subtest: public secret variable names are rejected
+ok 35 - public secret variable names are rejected
+  ---
+  duration_ms: 0.085676
+  type: 'test'
+  ...
+# Subtest: installation copies a complete skill including hidden template files
+ok 36 - installation copies a complete skill including hidden template files
+  ---
+  duration_ms: 2.303149
+  type: 'test'
+  ...
+# Subtest: installed standalone runner can initialize the app
+ok 37 - installed standalone runner can initialize the app
+  ---
+  duration_ms: 34.385826
+  type: 'test'
+  ...
+# Subtest: installation dry run has no filesystem side effects
+ok 38 - installation dry run has no filesystem side effects
+  ---
+  duration_ms: 0.793357
+  type: 'test'
+  ...
+# Subtest: duplicate installation refuses to overwrite local edits
+ok 39 - duplicate installation refuses to overwrite local edits
+  ---
+  duration_ms: 2.198905
+  type: 'test'
+  ...
+# Subtest: user scope is explicit and does not modify other user configuration
+ok 40 - user scope is explicit and does not modify other user configuration
+  ---
+  duration_ms: 1.802012
+  type: 'test'
+  ...
+# Subtest: ambiguous or missing installation scope is rejected
+ok 41 - ambiguous or missing installation scope is rejected
+  ---
+  duration_ms: 0.320192
+  type: 'test'
+  ...
+# Subtest: symlinked installation paths are rejected
+ok 42 - symlinked installation paths are rejected
+  ---
+  duration_ms: 0.532533
+  type: 'test'
+  ...
+# Subtest: CLI status provides machine-readable JSON
+ok 43 - CLI status provides machine-readable JSON
+  ---
+  duration_ms: 31.399522
+  type: 'test'
+  ...
+# Subtest: CLI returns nonzero for blocked gates and unknown options
+ok 44 - CLI returns nonzero for blocked gates and unknown options
+  ---
+  duration_ms: 83.576676
+  type: 'test'
+  ...
+# Subtest: argument parsing rejects duplicated or missing option values
+ok 45 - argument parsing rejects duplicated or missing option values
+  ---
+  duration_ms: 0.235066
+  type: 'test'
+  ...
+1..45
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 458.03922

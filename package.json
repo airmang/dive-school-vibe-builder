@@ -1,0 +1,15 @@
+{
+  "name": "school-vibe-builder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Korean teacher-oriented Codex skill harness: interview, plan, build, verify, share.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verify": "node scripts/verify-package.mjs"
+  }
+}
