@@ -2,7 +2,7 @@
 
 | 증상 | 확인 순서 | 피할 행동 |
 |---|---|---|
-| 스킬이 안 보임 | 현재 앱 루트, `.agents/skills/school-vibe-builder/SKILL.md`, `/skills`, 다음 턴/재시작 | 전체 환경 재설치부터 시작 |
+| 스킬이 안 보임 | 현재 앱 루트, `.agents/skills/dive-builder/SKILL.md`, `/skills`, 다음 턴/재시작 | 전체 환경 재설치부터 시작 |
 | 계획 파일이 또 생성됨 | 현재 폴더와 기존 PROJECT/PLAN 확인, 이어하기 모드로 전환 | 기존 계획 덮어쓰기 |
 | create-next-app이 파일 충돌 | 문서 보존, 임시 scaffold에서 앱 파일만 검토 복사 | AGENTS/PLAN 삭제 |
 | localhost 접속 불가 | 실제 서버 프로세스, 실행 로그, 포트, 올바른 URL | 서버가 실행됐다고 추측 |
@@ -25,13 +25,13 @@ PLAN의 작업 상태를 `[!]`로 두고 증상, 재현, 마지막 확인, 다�
 ## 복구 프롬프트
 
 ```text
-$school-vibe-builder로 현재 문제를 정리해줘.
+$dive-builder로 현재 문제를 정리해줘.
 PLAN의 마지막 성공 단계와 지금 실패한 단계만 비교하고,
 한 번에 원인 하나를 확인해줘. 권한을 풀거나 프로젝트를 다시 만들지는 마.
 ```
 
 ```text
-$school-vibe-builder로 다시 이어가자.
+$dive-builder로 다시 이어가자.
 체크박스와 실제 파일 상태가 다르면 실제 상태를 우선하고,
 왜 다른지 기록한 뒤 다음 작업을 정해줘.
 ```

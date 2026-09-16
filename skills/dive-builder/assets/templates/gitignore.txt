@@ -1,0 +1,27 @@
+# Local configuration and private material
+.env
+.env.*
+!.env.example
+private-data/
+student-data/
+backups/
+*.dump
+*.backup
+*.sqlite
+*.sqlite3
+*.db
+*.pem
+*.key
+# Generated outputs; extend only when relevant to the project
+node_modules/
+.next/
+.vercel/
+dist/
+build/
+coverage/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

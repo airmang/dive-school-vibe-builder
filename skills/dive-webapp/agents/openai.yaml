@@ -1,0 +1,6 @@
+interface:
+  display_name: "DIVE 공유 웹앱"
+  short_description: "선택형 Next.js·Supabase·GitHub·Vercel 제작·배포 모드"
+  default_prompt: "$dive-webapp으로 공유 웹앱을 만들고 싶어. 공통 하네스와 함께 필요한 것부터 질문해줘."
+policy:
+  allow_implicit_invocation: true
