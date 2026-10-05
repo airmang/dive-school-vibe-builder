@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const errors=[];
 function check(ok,msg){if(!ok)errors.push(msg);}
 function read(p){return fs.readFileSync(path.join(root,p),'utf8');}
-for(const p of ['README.md','START_HERE.md','AGENTS.md','LICENSE','SECURITY.md','CHANGELOG.md','.gitignore','.gitattributes','docs/migration-v0.2.md','docs/testing-report.md'])check(fs.existsSync(path.join(root,p)),`Missing: ${p}`);
+for(const p of ['README.md','START_HERE.md','SETUP.md','AGENTS.md','LICENSE','SECURITY.md','CHANGELOG.md','.gitignore','.gitattributes','docs/migration-v0.2.md','docs/testing-report.md','docs/windows-rehearsal.md','skills/dive-builder/references/setup.md','skills/dive-builder/scripts/doctor.sh','skills/dive-builder/scripts/doctor.ps1'])check(fs.existsSync(path.join(root,p)),`Missing: ${p}`);
 for(const name of BUNDLE){
   const p=`skills/${name}`;
   const skill=read(`${p}/SKILL.md`);

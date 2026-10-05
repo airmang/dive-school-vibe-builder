@@ -41,6 +41,31 @@ test('home and filesystem root rejected',()=>{assert.throws(()=>validateProjectR
 test('regular file cannot be project root',t=>{const p=path.join(folder(t),'file');fs.writeFileSync(p,'x');assert.throws(()=>validateProjectRoot(p));});
 test('symlink and broken symlink paths rejected',{skip:process.platform==='win32'},t=>{const p=folder(t);const real=path.join(p,'real');fs.mkdirSync(real);fs.symlinkSync(real,path.join(p,'link'));assert.throws(()=>assertSafePath(path.join(p,'link','new')));fs.symlinkSync(path.join(p,'missing'),path.join(p,'broken'));assert.throws(()=>assertSafePath(path.join(p,'broken','new')));});
 test('symlinked output cannot be overwritten',{skip:process.platform==='win32'},t=>{const p=folder(t);const target=path.join(folder(t),'secret');fs.writeFileSync(target,'kept');fs.symlinkSync(target,path.join(p,'AGENTS.md'));assert.throws(()=>initializeProject({project:p,name:'x'}));assert.equal(fs.readFileSync(target,'utf8'),'kept');});
+test('macOS system temp aliases work while nested user links remain rejected',{skip:process.platform!=='darwin'},t=>{
+  assert.equal(assertSafePath('/tmp'),'/private/tmp');
+  assert.equal(assertSafePath('/var'),'/private/var');
+  const aliasRoot=folder(t),realRoot=fs.realpathSync(aliasRoot);
+  assert.equal(assertSafePath(aliasRoot),realRoot);
+  fs.mkdirSync(path.join(aliasRoot,'real'));
+  fs.symlinkSync(path.join(aliasRoot,'real'),path.join(aliasRoot,'user-link'));
+  assert.throws(()=>assertSafePath(path.join(aliasRoot,'user-link','app')),/심볼릭 링크/);
+  initializeProject({project:path.join(aliasRoot,'ordinary-app'),name:'임시 경로'});
+  assert.equal(checkProject(path.join(aliasRoot,'ordinary-app')).ok,true);
+});
+test('installer CLI invoked through macOS temp alias really installs',{skip:process.platform!=='darwin'},t=>{
+  const p=folder(t),source=path.join(p,'distribution'),app=path.join(p,'app');
+  fs.cpSync(path.join(ROOT,'skills'),path.join(source,'skills'),{recursive:true});
+  fs.mkdirSync(path.join(source,'scripts'));fs.copyFileSync(path.join(ROOT,'scripts/install.mjs'),path.join(source,'scripts/install.mjs'));
+  const out=spawnSync(process.execPath,[path.join(source,'scripts/install.mjs'),'--project',app],{encoding:'utf8'});
+  assert.equal(out.status,0,out.stderr);assert.match(out.stdout,/installed/);
+  assert(fs.existsSync(path.join(app,'.agents/skills/dive-webapp/SKILL.md')));
+});
+test('Windows directory junction cannot redirect writes',{skip:process.platform!=='win32'},t=>{
+  const p=folder(t),real=path.join(p,'real'),link=path.join(p,'junction');
+  fs.mkdirSync(real);fs.symlinkSync(real,link,'junction');
+  assert.throws(()=>initializeProject({project:path.join(link,'app'),name:'test'}),/심볼릭 링크/);
+  assert.equal(fs.existsSync(path.join(real,'app')),false);
+});
 test('parser ignores fenced examples including tilde fences',()=>{const p=parsePlan('```md\n- [x] [FAKE.1] no\n```\n~~~\n> DIVE_MODE: webapp\n~~~\n- [ ] [REAL.2] yes');assert.deepEqual(p.tasks.map(t=>t.id),['REAL.2']);assert.equal(p.metadata.DIVE_MODE,undefined);});
 test('CRLF plan parses correctly',t=>{const p=init(t);write(p,read(p).replaceAll('\n','\r\n'));assert.equal(checkProject(p).ok,true);});
 test('empty plan cannot pass',t=>{const p=init(t);write(p,read(p).replace(/^- \[ \].*\n/gm,''));assert.equal(checkProject(p).ok,false);});
@@ -57,6 +82,15 @@ test('general N/A needs recorded reason',t=>{const p=init(t);write(p,read(p).rep
 test('static webapp can omit unneeded DB and auth',t=>{const p=init(t,'webapp');meta(p,'DIVE_DATA','none');meta(p,'DIVE_AUTH','none');for(const task of parsePlan(read(p)).tasks.filter(t=>/^S[345]\./.test(t.id)||t.id==='S7.2'))mark(p,task.id,'-','N/A','사용자와 합의: 공개 정적 계산기로 서버 저장과 로그인이 없음');assert.equal(checkProject(p).ok,true);});
 test('Supabase RLS cannot be marked N/A',t=>{const p=init(t,'webapp');meta(p,'DIVE_DATA','supabase');mark(p,'S3.2','-','N/A','사용자 요청이라는 이유로 보안 검증을 제외하려고 했다');assert(checkProject(p).issues.some(x=>x.includes('제외할 수')));});
 test('public Supabase app may omit login but not RLS access tests',t=>{const p=init(t,'webapp');meta(p,'DIVE_DATA','supabase');meta(p,'DIVE_AUTH','none');mark(p,'S5.1','-','N/A','사용자와 합의: 공개 읽기 화면으로 사용자 로그인이 없음');assert.equal(checkProject(p).ok,true);mark(p,'S5.3','-','N/A','사용자와 합의: 공개 읽기 화면으로 사용자 로그인이 없음');assert.equal(checkProject(p).ok,false);});
+test('additional optional webapp tasks accept N/A but still require evidence',t=>{
+  const p=init(t,'webapp');meta(p,'DIVE_DATA','supabase');meta(p,'DIVE_AUTH','required');
+  write(p,read(p)+'\n- [-] [EXTRA.1] 선택 기능 CSV 내보내기\n');
+  assert.equal(checkProject(p).ok,false);
+  mark(p,'EXTRA.1','-','N/A','사용자와 합의: CSV 내보내기를 첫 버전에서 제외했다.');
+  assert.equal(checkProject(p).ok,true);
+  mark(p,'S5.3','-','N/A','사용자와 합의라는 이유로 RLS 접근 검증을 제외한다.');
+  assert.equal(checkProject(p).ok,false);
+});
 test('webapp release requires resolved configuration',t=>{const p=init(t,'webapp');complete(p);assert(checkProject(p,'release').issues.some(x=>x.includes('필요 여부')));});
 test('general local delivery needs no Git or cloud',t=>{const p=init(t);complete(p);assert.equal(checkProject(p,'release').ok,true);assert.equal(fs.existsSync(path.join(p,'.git')),false);});
 test('all N/A cannot claim release',t=>{const p=init(t);meta(p,'PLAN_APPROVAL','approved');for(const t of parsePlan(read(p)).tasks)mark(p,t.id,'-','N/A','사용자와 합의: 이번 작업 범위에 해당하지 않는 항목');assert.equal(checkProject(p,'release').ok,false);});

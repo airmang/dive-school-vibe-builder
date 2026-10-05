@@ -3,8 +3,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertSafePath, validateProjectRoot, parseArguments, rejectUnknown } from '../skills/dive-builder/scripts/harness.mjs';
+import { fileURLToPath } from 'node:url';
+import { assertSafePath, validateProjectRoot, parseArguments, rejectUnknown, isMain } from '../skills/dive-builder/scripts/harness.mjs';
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 export const BUNDLE=['dive-builder','dive-webapp','school-vibe-builder'];
 function filesIn(folder) {
@@ -69,6 +69,6 @@ function cli(argv) {
   rejectUnknown(o,['project','user','core-only','dry-run']);
   console.log(JSON.stringify(installSkill({project:o.project,user:o.user,coreOnly:o['core-only'],dryRun:o['dry-run']}),null,2));
 }
-if(process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href) {
+if(isMain(import.meta.url)) {
   try {cli(process.argv.slice(2));} catch(e) {console.error(`ERROR: ${e.message}`);process.exitCode=2;}
 }
