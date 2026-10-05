@@ -2,7 +2,7 @@
 
 ## 0.2.1 — 2026-10-05
 
-- Node.js/Git 없이 ZIP·Codex 대화로 시작하는 SETUP 진입점과 설치 전 AGENTS 라우팅 추가.
+- GitHub 링크+설치 요청만으로 시작하는 SETUP 진입점과 설치 전 AGENTS 라우팅 추가. 배포물 다운로드·압축 해제도 Codex가 지원.
 - Windows WinGet/공식 설치 파일, macOS/Linux 환경별 설치 지원·PATH 재확인·npm.cmd/npx.cmd 안내.
 - Node 없이 실행하는 읽기 전용 환경 점검 도우미(Windows PowerShell/POSIX sh) 추가. 자동 설치·권한/정책 변경은 하지 않음.
 - 첫 Next.js 앱을 별도 빈 폴더에 생성해 기존 스킬·계획·환경 파일과 충돌하지 않는 절차 추가.

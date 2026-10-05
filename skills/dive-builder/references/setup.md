@@ -1,6 +1,7 @@
 # Node.js·npm·Git 준비부터 돕기
 
 설치를 사용자의 숙제로 넘기지 않는다. 이 문서는 스킬 설치 전 배포물의 SETUP.md에서도 읽는다.
+GitHub 링크로 설치를 요청했는데 배포물이 로컬에 없으면 저장소 README·[SETUP.md](https://github.com/airmang/dive-school-vibe-builder/blob/main/SETUP.md)의 링크 시작 절차로 다운로드부터 돕는다.
 도구 설치를 요청한 사용자의 승인 범위에서 직접 할 수 있는 준비를 이어서 수행한다.
 새 기획 인터뷰는 환경 준비가 끝난 뒤 한다. 기존 앱 수정에는 필요한 도구만 확인한다.
 
