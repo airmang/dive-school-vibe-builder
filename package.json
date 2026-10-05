@@ -1,6 +1,6 @@
 {
   "name": "dive-builder",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Beginner-friendly development harness with an optional Supabase/Vercel webapp skill.",

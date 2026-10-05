@@ -1,5 +1,15 @@
 # 변경 기록
 
+## 0.2.1 — 2026-10-05
+
+- GitHub 링크+설치 요청만으로 시작하는 SETUP 진입점과 설치 전 AGENTS 라우팅 추가. 배포물 다운로드·압축 해제도 Codex가 지원.
+- Windows WinGet/공식 설치 파일, macOS/Linux 환경별 설치 지원·PATH 재확인·npm.cmd/npx.cmd 안내.
+- Node 없이 실행하는 읽기 전용 환경 점검 도우미(Windows PowerShell/POSIX sh) 추가. 자동 설치·권한/정책 변경은 하지 않음.
+- 첫 Next.js 앱을 별도 빈 폴더에 생성해 기존 스킬·계획·환경 파일과 충돌하지 않는 절차 추가.
+- macOS의 고정된 /tmp·/var·/etc 시스템 링크만 정규화하고 사용자 링크 차단 유지.
+- 웹앱에 추가한 선택 작업의 합의된 N/A 허용. 기존 필수 작업·RLS 점검 제외 제한은 유지.
+- 실제 Windows 설치·학교망·클라우드 종단간 검증은 별도 리허설로 남김.
+
 ## 0.2.0 — 2026-09-16
 
 - 범용 dive-builder와 선택형 dive-webapp을 분리. 하나의 PROJECT/PLAN을 공유.

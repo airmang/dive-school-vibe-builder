@@ -9,7 +9,7 @@ import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.2.1';
 export const SKILL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WEB_ROOT = path.resolve(SKILL_ROOT, '../dive-webapp');
 const MAX_TEXT_BYTES = 1024 * 1024;
@@ -24,9 +24,32 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 const DISCLAIMER = '문서 형식·완료 근거 기입·일부 비밀 패턴만 검사했습니다. 실제 동작·권한·배포와 해당 데이터 검토는 별도로 필요합니다. 계획의 진실성이나 코드 변경 후 근거의 유효성을 자동 증명하지 않습니다.';
 
-/** Refuse symlinks in all existing path components, including broken links. */
-export function assertSafePath(value) {
+/** Node resolves ESM URLs through system aliases; compare the real CLI entry too. */
+export function isMain(moduleUrl, entry = process.argv[1]) {
+  if (!entry) return false;
+  try { return moduleUrl === pathToFileURL(fs.realpathSync(entry)).href; }
+  catch { return false; }
+}
+
+/** Canonicalize only macOS system aliases with their expected fixed targets. */
+function systemPath(value) {
   const absolute = path.resolve(value);
+  if (process.platform === 'darwin') {
+    for (const alias of ['/tmp', '/var', '/etc']) {
+      if (absolute === alias || absolute.startsWith(`${alias}/`)) {
+        const target = `/private${alias}`;
+        if (fs.lstatSync(alias).isSymbolicLink() && fs.realpathSync(alias) === target) {
+          return path.join(target, path.relative(alias, absolute));
+        }
+      }
+    }
+  }
+  return absolute;
+}
+
+/** Refuse other symlinks in all existing path components, including broken links. */
+export function assertSafePath(value) {
+  const absolute = systemPath(value);
   const parsed = path.parse(absolute);
   let current = parsed.root;
   for (const component of absolute.slice(parsed.root.length).split(path.sep).filter(Boolean)) {
@@ -265,17 +288,21 @@ export function checkProject(project, gate = 'draft') {
     const counts=new Map();
     for(const t of tasks) counts.set(t.id,(counts.get(t.id)??0)+1);
     for(const [id,n] of counts) if(n>1) issues.push(`중복 작업 ID: ${id}`);
+    const requiredWebappIds=new Set();
     if(mode==='webapp') {
       const file=path.join(WEB_ROOT,'assets/required-tasks.json');
       if(!fs.existsSync(file)) issues.push('웹앱 점검에 dive-webapp 스킬이 필요합니다.');
-      else for(const id of JSON.parse(readText(file))) if(!counts.has(id)) issues.push(`웹앱 작업 누락: ${id}`);
+      else for(const id of JSON.parse(readText(file))) {
+        requiredWebappIds.add(id);
+        if(!counts.has(id)) issues.push(`웹앱 작업 누락: ${id}`);
+      }
     }
     for(const t of tasks) {
       const record=evidence.filter(e=>e.id===t.id).at(-1);
       if(t.state==='x' && (!record || !['PASS','MANUAL-PASS'].includes(record.result) || !validEvidence(record))) issues.push(`완료 근거 확인 필요: ${t.id}`);
       if(t.state==='-') {
         if(!record || record.result!=='N/A' || !validEvidence(record)) issues.push(`적용 제외 합의·이유 기록 필요: ${t.id}`);
-        if(mode==='webapp') {
+        if(mode==='webapp' && requiredWebappIds.has(t.id)) {
           const dataNone=metadata.DIVE_DATA==='none', authNone=metadata.DIVE_AUTH==='none';
           const allowed=(/^S[34]\./.test(t.id) && dataNone) || (/^S5\./.test(t.id) && authNone && (dataNone || ['S5.1','S5.2'].includes(t.id))) || (t.id==='S7.2' && dataNone && authNone);
           if(!allowed) issues.push(`필수 웹앱 점검을 제외할 수 없습니다: ${t.id}`);
@@ -389,7 +416,7 @@ export function cli(argv) {
   return result.ok === false ? 1 : 0;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   try { process.exitCode = cli(process.argv.slice(2)); }
   catch (error) { console.error(`ERROR: ${error.message}`); process.exitCode = 2; }
 }

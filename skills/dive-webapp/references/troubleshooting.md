@@ -2,6 +2,8 @@
 
 | 증상 | 확인 순서 | 피할 행동 |
 |---|---|---|
+| node/npm/git을 찾지 못함 | 공통 references/setup.md, 기존 설치·현재 셸/PATH, 필요한 설치와 새 프로세스 재확인 | 무조건 재설치, 설치 종료 0만으로 완료 표시 |
+| PowerShell에서 npm/npx 실행 차단 | 같은 Node 설치의 npm.cmd/npx.cmd 사용 | 실행 정책 완화부터 시작 |
 | 스킬이 안 보임 | 현재 앱 루트, `.agents/skills/dive-builder/SKILL.md`, `/skills`, 다음 턴/재시작 | 전체 환경 재설치부터 시작 |
 | 계획 파일이 또 생성됨 | 현재 폴더와 기존 PROJECT/PLAN 확인, 이어하기 모드로 전환 | 기존 계획 덮어쓰기 |
 | create-next-app이 파일 충돌 | 문서 보존, 임시 scaffold에서 앱 파일만 검토 복사 | AGENTS/PLAN 삭제 |
