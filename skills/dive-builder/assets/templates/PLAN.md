@@ -35,3 +35,4 @@
 
 ## 다음 세션
 `$dive-builder로 이어서 진행해줘. PROJECT.md, PLAN.md와 실제 파일을 대조하고 다음 작업을 진행해줘.`
+Claude Code에서는 맨 앞을 `/dive-builder`로 바꾼다.

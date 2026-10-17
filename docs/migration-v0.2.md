@@ -19,7 +19,7 @@ node scripts/install.mjs --project "기존 프로젝트 경로"
 
 ## 기존 계획 이어가기
 
-Codex에 다음처럼 요청합니다.
+Codex에 다음처럼 요청합니다. Claude Code에서는 `$` 대신 `/`를 씁니다.
 
 ```text
 $dive-builder로 기존 프로젝트를 읽어줘.

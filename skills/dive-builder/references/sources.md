@@ -4,8 +4,10 @@
 
 - [OpenAI Codex Skills](https://developers.openai.com/codex/skills): SKILL.md, 점진적 읽기, .agents/skills, 명시적/암묵적 선택, agents/openai.yaml.
 - [OpenAI AGENTS.md](https://developers.openai.com/codex/guides/agents-md): 프로젝트 지침의 적용 범위.
+- [Claude Code Skills](https://code.claude.com/docs/en/skills): `.claude/skills`, `/이름` 호출, 설명 기반 자동 선택.
+- [Claude Code Memory](https://code.claude.com/docs/en/memory): CLAUDE.md와 `@AGENTS.md` 가져오기.
 - [DIVE 설계 원칙](https://github.com/airmang/DIVE/blob/main/.specify/memory/constitution.md): 프로젝트 종류 비제한, 실제 작업, 저마찰 도움, 근거 구분을 참고한다.
 
 이 패키지는 DIVE 데스크톱 런타임·연구 로깅·전용 UI를 복제하지 않는다.
-별도 설치된 DIVE for Codex와 동일 제품·동일 패키지라고 가정하지 않는다.
+별도 설치된 DIVE for Codex와 동일 제품·동일 패키지라고 가정하지 않는다. Codex와 Claude Code에는 같은 스킬 파일을 복사해 둘 뿐이다.
 이 배포물의 설치는 로컬 스킬 폴더 복사이며 플러그인 마켓 등록이나 커넥터 연결을 수행하지 않는다.

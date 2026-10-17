@@ -1,7 +1,7 @@
 # 공식 출처와 적용 범위
 
 확인일: 2026-09-16. 아래는 기술 구조의 근거다. 메뉴 위치·플랜·SDK API는 실행 시 재확인한다.
-이 패키지는 OpenAI, Supabase, Vercel의 공식 제품 또는 공식 검증 배포물이 아니다.
+이 패키지는 OpenAI, Anthropic, Supabase, Vercel의 공식 제품 또는 공식 검증 배포물이 아니다.
 문서 본문·코드는 독자적으로 작성했다. 특정 외부 스킬 코드를 복사한 패키지가 아니다.
 
 | ID | 공식 자료 | 이 패키지에서 확인한 내용 |
@@ -18,15 +18,21 @@
 | S10 | [Next.js — Installation](https://nextjs.org/docs/app/getting-started/installation) | 현재 실행 환경과 초기 구성 |
 | S11 | [OpenAI — skill-installer](https://github.com/openai/skills/blob/main/skills/.system/skill-installer/SKILL.md) | 저장소/경로 기반 스킬 설치 |
 | S12 | [OpenAI — skill-creator](https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md) | 스킬과 references/assets/scripts의 분리 |
+| S13 | [Claude Code — Skills](https://code.claude.com/docs/en/skills) | `.claude/skills/<이름>/SKILL.md`, `/이름` 호출, 설명 기반 자동 사용 |
+| S14 | [Claude Code — Memory](https://code.claude.com/docs/en/memory) | CLAUDE.md, `@경로` 가져오기, AGENTS.md 연결 |
+| S15 | [Claude Code — Desktop](https://code.claude.com/docs/en/desktop) | 데스크톱 앱 Code 탭, 폴더 선택, 권한 모드, 미리보기 |
 
 ## 호환성 선택
 
-기본 설치는 S1의 프로젝트별 `.agents/skills/`를 사용한다.
+기본 설치는 S1의 프로젝트별 `.agents/skills/`(Codex)와 S13의 `.claude/skills/`(Claude Code)에 같은 파일을 함께 둔다.
+Claude Code는 `.agents/skills/`를 읽지 않고 Codex는 `.claude/skills/`를 읽지 않으므로 중복 활성화되지 않는다(Claude Code 2.1.301에서 확인, 2026-10-17).
+대화 시작 뒤에 처음 생긴 `.claude/skills/` 폴더는 그 대화에서 보이지 않을 수 있다(S13). 설치 후에는 새 대화로 시작한다.
+규칙은 AGENTS.md 한 곳에 두고 CLAUDE.md는 `@AGENTS.md`로 가져온다(S14).
 S11의 설치기는 환경에 따라 `$CODEX_HOME/skills`에 설치할 수 있다. 이 패키지는 두 경로를 혼합해 복제 설치하지 않는다.
-`$skill-installer`는 Codex 대화에서 쓰는 지시이며 PowerShell 명령이 아니다.
+`$skill-installer`는 Codex 대화에서 쓰는 지시이며 PowerShell 명령이 아니다. Claude Code의 `/이름`도 대화창 입력이다.
 사용자 폴더 전체 설정을 수정하거나 승인 정책을 자동 변경하지 않는다.
 
 ## 검증의 한계
 
-패키지의 Node 도우미는 로컬에서 테스트한다. 호스팅 계정·실제 Codex 세션·학교 네트워크·학생 계정·클라우드 DB를 연결한 전체 실증은 별도다.
+패키지의 Node 도우미는 로컬에서 테스트한다. 호스팅 계정·실제 Codex·Claude Code 세션·학교 네트워크·학생 계정·클라우드 DB를 연결한 전체 실증은 별도다.
 학교 개인정보 처리의 법적 적합성은 이 자료로 판단하지 않는다. 실제 운영은 학교의 해당 절차를 따른다.

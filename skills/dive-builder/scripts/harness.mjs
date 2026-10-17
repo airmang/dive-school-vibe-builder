@@ -9,12 +9,12 @@ import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-export const VERSION = '0.2.1';
+export const VERSION = '0.3.0';
 export const SKILL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WEB_ROOT = path.resolve(SKILL_ROOT, '../dive-webapp');
 const MAX_TEXT_BYTES = 1024 * 1024;
 const EXCLUDED_DIRS = new Set([
-  '.git', '.agents', 'node_modules', '.next', '.vercel', 'dist', 'out',
+  '.git', '.agents', '.claude', 'node_modules', '.next', '.vercel', 'dist', 'out',
   'build', 'coverage', 'playwright-report', 'test-results', '.venv', 'venv', '__pycache__', 'target', '.dive-install',
   'private-data', 'student-data', 'backups',
 ]);
@@ -22,6 +22,8 @@ const TEXT_EXTENSIONS = new Set([
   '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.json', '.sql',
   '.md', '.txt', '.yml', '.yaml', '.html', '.css', '.py', '.rs', '.go', '.java', '.cs', '.cpp', '.sh', '.ps1', '.toml',
 ]);
+const CLAUDE_IMPORT_WARNING = '기존 CLAUDE.md를 보존했습니다. Claude Code가 AGENTS.md 규칙을 읽도록 CLAUDE.md에 `@AGENTS.md` 한 줄을 추가하세요.';
+export function importsAgents(text) { return /^\s*@(?:\.\/)?AGENTS\.md\s*$/m.test(text); }
 const DISCLAIMER = '문서 형식·완료 근거 기입·일부 비밀 패턴만 검사했습니다. 실제 동작·권한·배포와 해당 데이터 검토는 별도로 필요합니다. 계획의 진실성이나 코드 변경 후 근거의 유효성을 자동 증명하지 않습니다.';
 
 /** Node resolves ESM URLs through system aliases; compare the real CLI entry too. */
@@ -119,7 +121,7 @@ export function initializeProject({ project, name, mode = 'general', profile = '
   };
   const templates = path.join(SKILL_ROOT,'assets/templates');
   const sources = {
-    'AGENTS.md': path.join(templates,'AGENTS.md'), 'PROJECT.md': path.join(templates,'PROJECT.md'),
+    'AGENTS.md': path.join(templates,'AGENTS.md'), 'CLAUDE.md': path.join(templates,'CLAUDE.md'), 'PROJECT.md': path.join(templates,'PROJECT.md'),
     'PLAN.md': path.join(mode === 'webapp' ? path.join(WEB_ROOT,'assets') : templates,'PLAN.md'),
     '.gitignore': path.join(templates,'gitignore.txt'), '.env.example': path.join(templates,'env-example.txt'),
   };
@@ -130,6 +132,11 @@ export function initializeProject({ project, name, mode = 'general', profile = '
   for (const [file, source] of Object.entries(sources)) {
     let output = assertSafePath(path.join(root,file));
     if (fs.existsSync(output)) {
+      if (file === 'CLAUDE.md') {
+        preserved.push(file);
+        if (!importsAgents(readText(output))) warnings.push(CLAUDE_IMPORT_WARNING);
+        continue;
+      }
       if (file !== 'AGENTS.md') { preserved.push(file); continue; }
       output = assertSafePath(path.join(root,'AGENTS.dive.proposed.md'));
       warnings.push('기존 AGENTS.md를 보존했습니다. 제안 파일을 검토·병합한 뒤 정리하세요.');
@@ -272,6 +279,8 @@ export function checkProject(project, gate = 'draft') {
     if (!docs[name].trim()) issues.push(`${name}이 비어 있습니다.`);
     if (/\{\{[A-Z_]+\}\}/.test(docs[name])) issues.push(`${name}에 미치환 템플릿 항목이 있습니다.`);
   }
+  const claudeFile = assertSafePath(path.join(root, 'CLAUDE.md'));
+  if (fs.existsSync(claudeFile) && !importsAgents(readText(claudeFile))) warnings.push(CLAUDE_IMPORT_WARNING);
   if (['AGENTS.dive.proposed.md','AGENTS.school-vibe.proposed.md'].some(f=>fs.existsSync(assertSafePath(path.join(root,f))))) {
     warnings.push('AGENTS 제안 파일의 검토·병합이 필요합니다.');
     if(gate==='release') issues.push('AGENTS 제안 파일을 검토·정리하세요.');
@@ -304,7 +313,7 @@ export function checkProject(project, gate = 'draft') {
         if(!record || record.result!=='N/A' || !validEvidence(record)) issues.push(`적용 제외 합의·이유 기록 필요: ${t.id}`);
         if(mode==='webapp' && requiredWebappIds.has(t.id)) {
           const dataNone=metadata.DIVE_DATA==='none', authNone=metadata.DIVE_AUTH==='none';
-          const allowed=(/^S[34]\./.test(t.id) && dataNone) || (/^S5\./.test(t.id) && authNone && (dataNone || ['S5.1','S5.2'].includes(t.id))) || (t.id==='S7.2' && dataNone && authNone);
+          const allowed=['S6.2','S6.3'].includes(t.id) || (/^S[34]\./.test(t.id) && dataNone) || (/^S5\./.test(t.id) && authNone && (dataNone || ['S5.1','S5.2'].includes(t.id))) || (t.id==='S7.2' && dataNone && authNone);
           if(!allowed) issues.push(`필수 웹앱 점검을 제외할 수 없습니다: ${t.id}`);
         }
       }

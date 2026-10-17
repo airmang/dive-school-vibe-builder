@@ -8,7 +8,7 @@ GitHub 링크로 설치를 요청했는데 배포물이 로컬에 없으면 저�
 ## 1. 현재 환경 확인
 
 현재 작업 폴더, OS, 셸, CPU 아키텍처와 기존 앱의 런타임 요구사항을 확인한다.
-Windows PowerShell과 WSL/Linux는 서로 다른 설치 환경이다. 현재 Codex 셸과 앱을 실행할 환경을 맞추고 둘을 혼용하지 않는다.
+Windows PowerShell과 WSL/Linux는 서로 다른 설치 환경이다. 현재 AI 도구(Codex·Claude Code)의 셸과 앱을 실행할 환경을 맞추고 둘을 혼용하지 않는다.
 
 읽기 전용 도우미는 Node.js/Git 없이도 실행할 수 있다. 실제 스킬/배포물 경로로 치환한다.
 
@@ -72,26 +72,28 @@ Windows에만 설치된 Node/Git이 WSL에서 준비됐다고 기록하지 않�
 
 ## 4. 설치 후 PATH·버전 재확인
 
-설치 명령의 종료 0만으로 준비 완료라 하지 않는다. 새 터미널/새 Codex 프로세스에서 node·npm·git 버전과 실행 경로를 확인한다.
-이미 켜진 Codex는 설치 전 PATH를 계속 사용할 수 있다. 아직 못 찾으면 Codex를 완전히 종료하고 다시 열도록 안내한다.
+설치 명령의 종료 0만으로 준비 완료라 하지 않는다. 새 터미널/새 AI 도구 프로세스에서 node·npm·git 버전과 실행 경로를 확인한다.
+이미 켜진 Codex나 Claude 앱은 설치 전 PATH를 계속 사용할 수 있다. 아직 못 찾으면 앱을 완전히 종료하고 다시 열도록 안내한다.
 같은 폴더·대화에서 “설치했어. 다시 확인하고 이어서 진행해줘”로 재개하게 한다. 다시 설치하는 단계부터 반복하지 않는다.
 Windows는 필요하면 프로세스의 PATH를 사용자/머신 PATH에서 다시 읽거나 확인된 설치 경로를 현재 프로세스에만 더할 수 있다.
 기존 PATH를 보존한다. 영구 설정을 통째로 교체하거나 `setx PATH`로 잘라 쓰지 않는다.
 현재 프로세스에서만 정상이라면 재시작 후 정상도 따로 확인하며, 아직 확인하지 못했으면 완료로 쓰지 않는다.
 
 PowerShell에서 npm.ps1/npx.ps1이 차단되면 같은 설치의 `npm.cmd`/`npx.cmd`를 사용한다.
-실행 정책을 완화하거나 관리자 권한으로 Codex를 다시 띄우는 것을 기본 해결책으로 삼지 않는다.
+실행 정책을 완화하거나 관리자 권한으로 AI 도구를 다시 띄우는 것을 기본 해결책으로 삼지 않는다.
 git은 버전만 확인하면 된다. GitHub 로그인·토큰·커밋 작성자 설정은 실제 업로드 단계에서 필요한 만큼 다룬다.
 
 ## 5. 스킬 설치와 앱 시작으로 연결
 
 환경이 확인되면 배포물 폴더에서 `node scripts/install.mjs --project "별도 앱 폴더"`를 실행한다.
+기본값은 Codex(`.agents/skills`)와 Claude Code(`.claude/skills`)에 함께 설치한다. 사용자가 원할 때만 `--agent codex|claude`로 줄인다.
 Git 없이 ZIP으로 받은 배포물에서도 가능하다. 작업 경로는 공백·한글을 고려해 인용하고 임의의 폴더를 지우지 않는다.
 이미 스킬이 있으면 [이관 안내](https://github.com/airmang/dive-school-vibe-builder/blob/main/docs/migration-v0.2.md)에 따라 설치된 파일을 백업·비교하도록 안내한다.
-앱 폴더를 Codex에서 열도록 안내하고 `$dive-webapp` 또는 `$dive-builder` 시작 문장을 전달한다.
+앱 폴더를 지금 쓰는 도구에서 열도록 안내하고 시작 문장을 전달한다. Codex는 `$dive-webapp`/`$dive-builder`, Claude Code는 `/dive-webapp`/`/dive-builder`다.
+설치가 끝나면 같은 앱 폴더에서 **새 대화**로 시작하도록 안내한다. 새 대화가 시작될 때 스킬과 AGENTS.md(Claude Code는 CLAUDE.md를 거쳐)를 읽는다. Codex는 앱 재시작이 필요할 수 있다.
 아직 스킬이 발견되지 않으면 경로와 목록을 확인한 뒤 새 대화/재시작으로 이어간다. 설치 완료를 앱 제작 완료로 표시하지 않는다.
 
-웹앱은 `.agents/skills`와 PROJECT/PLAN이 이미 있는 폴더에 create-next-app을 직접 실행하지 않는다.
+웹앱은 `.agents/skills`·`.claude/skills`와 PROJECT/PLAN이 이미 있는 폴더에 create-next-app을 직접 실행하지 않는다.
 웹앱 스킬의 첫 앱 생성 절차에 따라 별도 임시 scaffold에서 앱 파일을 검토·병합하거나 현재 폴더에 최소 설정을 직접 작성한다.
 
 ## 공식 출처
