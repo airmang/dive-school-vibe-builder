@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const errors=[];
 function check(ok,msg){if(!ok)errors.push(msg);}
 function read(p){return fs.readFileSync(path.join(root,p),'utf8');}
-for(const p of ['README.md','START_HERE.md','SETUP.md','AGENTS.md','LICENSE','SECURITY.md','CHANGELOG.md','.gitignore','.gitattributes','docs/migration-v0.2.md','docs/testing-report.md','docs/windows-rehearsal.md','skills/dive-builder/references/setup.md','skills/dive-builder/scripts/doctor.sh','skills/dive-builder/scripts/doctor.ps1'])check(fs.existsSync(path.join(root,p)),`Missing: ${p}`);
+for(const p of ['README.md','START_HERE.md','SETUP.md','AGENTS.md','LICENSE','SECURITY.md','CHANGELOG.md','.gitignore','.gitattributes','docs/migration-v0.2.md','docs/testing-report.md','docs/windows-rehearsal.md','skills/dive-builder/references/setup.md','skills/dive-builder/scripts/doctor.sh','skills/dive-builder/scripts/doctor.ps1','CLAUDE.md','skills/dive-builder/assets/templates/CLAUDE.md'])check(fs.existsSync(path.join(root,p)),`Missing: ${p}`);
 for(const name of BUNDLE){
   const p=`skills/${name}`;
   const skill=read(`${p}/SKILL.md`);
@@ -18,6 +18,7 @@ for(const name of BUNDLE){
   check(skill.split('\n').length<500,`${name}: SKILL too long`);
   check(read(`${p}/agents/openai.yaml`).includes(`$${name}`),`${name}: default prompt`);
 }
+for(const p of ['CLAUDE.md','skills/dive-builder/assets/templates/CLAUDE.md'])check(/^@AGENTS\.md$/m.test(read(p)),`${p}: must import AGENTS.md`);
 check(/allow_implicit_invocation: false/.test(read('skills/school-vibe-builder/agents/openai.yaml')),'Alias must be explicit-only');
 const pkg=JSON.parse(read('package.json'));
 check(pkg.version===VERSION,'Version mismatch');
@@ -42,4 +43,4 @@ for(const file of files.filter(f=>f.endsWith('.md'))){
   }
 }
 if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}
-else console.log(`PASS: ${files.length} files, 3 skill entries, versions, webapp IDs, neutral general template, local links and fences.\nStructural validation only; no Codex/cloud end-to-end claim.`);
+else console.log(`PASS: ${files.length} files, 3 skill entries, versions, webapp IDs, neutral general template, local links and fences.\nStructural validation only; no Codex/Claude Code/cloud end-to-end claim.`);

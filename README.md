@@ -1,21 +1,26 @@
 # DIVE Builder
 
-**개발 경험이 없어도, 만들고 싶은 것을 실제로 완성하도록 돕는 Codex 개발 하네스.**
+**개발 경험이 없어도, 만들고 싶은 것을 실제로 완성하도록 돕는 개발 하네스. Codex와 Claude Code에서 함께 쓴다.**
 
-버전 **0.2.1** · 한국어 · MIT · 추가 npm 의존성 없음
+버전 **0.3.0** · 한국어 · MIT · 추가 npm 의존성 없음
 
 범용 개발 도우미 **dive-builder**와 선택형 **dive-webapp**을 함께 제공합니다.
 기본은 게임·자동화·파일 처리·봇·분석·웹앱·기존 코드 수정 등 자유로운 개발입니다.
 교사 연수에서는 공유 웹앱 모드를 선택해 Next.js → Supabase → GitHub → Vercel 경로를 사용할 수 있습니다.
 사용자를 가르치거나 평가하기보다 요구사항·계획·실행·검증·오류 해결·재개를 돕습니다.
 
-> 완성된 웹앱이나 데스크톱 앱이 아닙니다. 별도 프로젝트에서 Codex가 읽고 사용하는 스킬 묶음입니다.
-> DIVE 데스크톱의 전용 UI·Pi/Rust 통제·연구 로깅을 포함하지 않습니다. 공식 OpenAI/Supabase/Vercel 제품도 아닙니다.
+> 완성된 웹앱이나 데스크톱 앱이 아닙니다. 별도 프로젝트에서 Codex 또는 Claude Code가 읽고 사용하는 스킬 묶음입니다.
+> DIVE 데스크톱의 전용 UI·Pi/Rust 통제·연구 로깅을 포함하지 않습니다. 공식 OpenAI/Anthropic/Supabase/Vercel 제품도 아닙니다.
+
+| 도구 | 여는 곳 | 스킬 설치 위치 | 스킬 부르기 | 프로젝트 규칙 |
+|---|---|---|---|---|
+| Codex | ChatGPT 데스크톱 앱의 Codex, Codex CLI | `.agents/skills/` | `$dive-webapp` | AGENTS.md |
+| Claude Code | Claude 데스크톱 앱의 **Code** 탭, Claude Code CLI | `.claude/skills/` | `/dive-webapp` | CLAUDE.md가 `@AGENTS.md`로 같은 규칙을 읽음 |
 
 ## 가장 쉬운 시작
 
-**앱을 만들 작업 폴더를 Codex에서 열고**, 아래 문장을 대화창에 넣으면 됩니다.
-저장소 내려받기와 Node.js·Git 설치도 Codex가 돕습니다. 직접 ZIP을 받거나 터미널 명령을 입력할 필요는 없습니다.
+**앱을 만들 작업 폴더를 Codex나 Claude Code에서 열고**, 아래 문장을 대화창에 넣으면 됩니다.
+저장소 내려받기와 Node.js·Git 설치도 AI가 돕습니다. 직접 ZIP을 받거나 터미널 명령을 입력할 필요는 없습니다.
 
 ```text
 https://github.com/airmang/dive-school-vibe-builder
@@ -24,23 +29,25 @@ https://github.com/airmang/dive-school-vibe-builder
 준비가 끝나면 웹앱을 만들 수 있게 이어서 안내해줘.
 ```
 
-Codex가 기존 설치·OS를 확인하고 필요한 도구 설치부터 돕습니다.
+AI가 기존 설치·OS를 확인하고 필요한 도구 설치부터 돕습니다.
 Windows WinGet/공식 설치 파일, macOS의 기존 설치 도구/공식 설치 파일을 사용하며 설치 후 PATH·버전을 다시 확인합니다.
 설치 화면의 동의·관리자 인증은 본인이 처리합니다. 자세한 절차는 [설치 안내](SETUP.md)를 참고하세요.
 
-Codex는 설치할 배포물을 별도 폴더에 받아 확인한 뒤 앱 폴더에 스킬을 설치합니다.
-이미 개발 환경이 준비됐으면 Codex가 받은 배포물 폴더에서 아래 명령을 실행할 수 있습니다.
+AI는 설치할 배포물을 별도 폴더에 받아 확인한 뒤 앱 폴더에 스킬을 설치합니다.
+이미 개발 환경이 준비됐으면 AI가 받은 배포물 폴더에서 아래 명령을 실행할 수 있습니다.
 스킬 설치 도구는 Node.js 20 이상, 기본 웹앱 경로는 Node.js 20.9 이상과 현재 프레임워크 요구사항이 필요합니다. 새 설치는 현재 LTS를 권합니다.
 
 ```text
 node scripts/install.mjs --project "앱 작업 폴더의 실제 경로"
 ```
 
-공통·웹앱·구 이름 호환 스킬을 프로젝트의 `.agents/skills/`에 함께 설치합니다.
+공통·웹앱·구 이름 호환 스킬을 Codex용 `.agents/skills/`와 Claude Code용 `.claude/skills/`에 함께 설치합니다.
+한 도구만 쓰려면 `--agent codex` 또는 `--agent claude`를 붙입니다.
 설치 명령 자체는 기존 설치와 프로젝트 파일을 덮어쓰지 않고 계정 연결·패키지 설치·배포도 하지 않습니다.
-도구 설치와 앱 제작은 위 안내에 따라 Codex가 별도로 돕습니다.
+도구 설치와 앱 제작은 위 안내에 따라 AI가 별도로 돕습니다.
 
-스킬 설치가 끝나면 **앱 작업 폴더에서** 대화창에 입력합니다. 스킬을 찾지 못하면 같은 폴더에서 새 대화/재시작으로 이어갑니다.
+스킬 설치가 끝나면 **앱 작업 폴더에서** 대화창에 입력합니다. 아래 `$이름`은 Codex 형식이고, Claude Code에서는 `/이름`(`/dive-builder`, `/dive-webapp`)으로 씁니다.
+스킬을 찾지 못하면 같은 폴더에서 새 대화/재시작으로 이어갑니다.
 
 ```text
 $dive-builder로 시작해줘.
@@ -56,8 +63,8 @@ $dive-webapp으로 공유 웹앱을 만들고 싶어.
 필요한 것부터 질문하고 실제 배포까지 진행을 도와줘.
 ```
 
-위 `$...` 문장은 **Codex 대화용**이지 PowerShell 명령이 아닙니다.
-스킬이 안 보이면 `/skills`를 확인하고 Codex를 재시작합니다.
+위 `$...`·`/...` 문장은 **AI 대화창용**이지 PowerShell 명령이 아닙니다.
+스킬이 안 보이면 `/skills`를 확인하고 새 대화로 다시 시작합니다(Codex는 재시작이 필요할 수 있음).
 [첫 실행](START_HERE.md) · [교사 연수 운영](docs/facilitator-guide.md) · [v0.1에서 전환](docs/migration-v0.2.md)
 
 ## 두 모드, 하나의 프로젝트 기록
@@ -68,10 +75,11 @@ $dive-webapp으로 공유 웹앱을 만들고 싶어.
 | **dive-webapp** | 선택한 공유 웹앱의 DB·로그인·권한·GitHub·Vercel 연결을 구체적으로 지원 |
 | school-vibe-builder | 이전 호출/CLI 경로의 명시적 호환 진입점. 별도 엔진이 아님 |
 
-두 스킬은 같은 Codex가 함께 읽는 지침입니다. 스킬 사이에 자동 도구 호출이나 별도 에이전트 런타임이 생기는 것은 아닙니다.
+두 스킬은 같은 AI(Codex 또는 Claude Code)가 함께 읽는 지침입니다. 스킬 사이에 자동 도구 호출이나 별도 에이전트 런타임이 생기는 것은 아닙니다.
 공통 스킬은 단독 사용 가능합니다. 웹앱 스킬은 공통 스킬과 함께 사용하며, 기본 설치가 이를 보장합니다.
 
 PROJECT.md는 합의한 정의, PLAN.md는 유일한 진행 상태, AGENTS.md는 협업 규칙입니다.
+CLAUDE.md는 `@AGENTS.md` 한 줄로 같은 규칙을 Claude Code에 연결합니다. 규칙은 AGENTS.md 한 곳에서만 관리합니다.
 사용자는 문서를 관리할 필요 없이 “다음 단계”, “안 돼”, “오늘 여기까지”라고 말하면 됩니다.
 하네스는 이를 실제 파일과 검증 기록으로 이어가도록 안내합니다. 단순 수정에는 전체 인터뷰를 강제하지 않습니다.
 
@@ -88,18 +96,20 @@ Supabase를 사용하면서 RLS/접근 검증을 생략하는 것은 허용하�
 
 ```text
 node scripts/install.mjs --user
+node scripts/install.mjs --project "../my-project" --agent claude
 node scripts/install.mjs --project "../my-project" --core-only
 node scripts/install.mjs --project "../my-project" --dry-run
 ```
 
---user는 개인의 ~/.agents/skills, --core-only는 범용 스킬만 설치합니다.
+--user는 개인 범위(~/.agents/skills, ~/.claude/skills), --agent는 한 도구만, --core-only는 범용 스킬만 설치합니다.
 전역과 프로젝트 범위에 같은 이름을 중복 설치하지 않습니다. 기존 버전은 [이관 안내](docs/migration-v0.2.md)를 따릅니다.
 GitHub 경로별 skill-installer를 쓰는 경우에는 **dive-builder와 dive-webapp을 같은 스킬 상위 폴더에 모두 설치**해야 합니다.
-이 저장소의 설치 도구가 두 스킬을 묶어 설치하는 기본 방법입니다. 플러그인 마켓 등록은 포함하지 않습니다.
+이 저장소의 설치 도구가 두 스킬을 묶어 설치하는 기본 방법입니다. Codex·Claude Code 플러그인 마켓 등록은 포함하지 않습니다.
 
 ## 선택적 로컬 도우미
 
-아래는 앱 폴더 기준이며 보통 Codex가 실행합니다. 웹앱 초안은 init에 --mode webapp을 붙입니다.
+아래는 앱 폴더 기준이며 보통 AI가 실행합니다. 웹앱 초안은 init에 --mode webapp을 붙입니다.
+Claude Code 전용으로 설치했다면 경로의 `.agents/skills`를 `.claude/skills`로 바꿉니다. 두 위치의 도구는 같습니다.
 
 ```text
 node .agents/skills/dive-builder/scripts/harness.mjs init --project "." --name "내 프로젝트"
@@ -110,6 +120,7 @@ node .agents/skills/dive-builder/scripts/harness.mjs check --project "." --gate 
 ```
 
 init은 초안만 만듭니다. 기존 PROJECT/PLAN에는 쓰지 않으며 기존 AGENTS에는 제안 파일을 따로 만듭니다.
+기존 CLAUDE.md는 그대로 두고, `@AGENTS.md` 줄이 없으면 추가하라고 알려 줍니다.
 status/check는 읽기 전용입니다. 일반 모드의 작업 ID/개수는 자유롭고 웹앱 모드에만 해당 체크 지점이 적용됩니다.
 prepush는 Git 추적/제외 상태를 확인합니다. release는 기록상 완료 준비 점검이며 일반 로컬 도구에 Git·클라우드를 요구하지 않습니다.
 **PASS는 실제 동작·보안·승인 인증이 아닙니다.** 비밀 탐지는 일부 패턴이며 실제 권한·실행·배포를 별도로 시험해야 합니다.
@@ -121,12 +132,12 @@ npm test
 npm run verify
 ```
 
-[설계 결정](docs/architecture.md) · [검증 범위](docs/testing-report.md) · [실제 Codex 리허설](docs/skill-evaluation-cases.md) · [보안](SECURITY.md) · [변경 기록](CHANGELOG.md)
+[설계 결정](docs/architecture.md) · [검증 범위](docs/testing-report.md) · [실제 AI 도구 리허설](docs/skill-evaluation-cases.md) · [보안](SECURITY.md) · [변경 기록](CHANGELOG.md)
 
 ## 구조
 
 ```text
-skills/dive-builder/          공통 지침·중립 템플릿·로컬 점검 도구
+skills/dive-builder/          공통 지침·중립 템플릿(AGENTS.md, CLAUDE.md 포함)·로컬 점검 도구
 skills/dive-webapp/           선택형 웹앱 절차·예시·권한/배포 가이드
 skills/school-vibe-builder/   기존 이름의 얇은 호환 진입점
 scripts/                     묶음 설치·패키지 검사

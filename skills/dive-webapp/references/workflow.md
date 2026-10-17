@@ -10,11 +10,11 @@ Node.js/npm/Git이 없으면 공통 스킬의 references/setup.md부터 읽고 �
 
 ### 스킬·계획 파일이 있는 폴더에 첫 앱 만들기
 
-스킬 설치만으로 앱 폴더에 `.agents/`가 있고, init 후에는 PROJECT.md/PLAN.md/AGENTS.md/.env.example도 있다.
+스킬 설치만으로 앱 폴더에 `.agents/`·`.claude/`가 있고, init 후에는 PROJECT.md/PLAN.md/AGENTS.md/CLAUDE.md/.env.example도 있다.
 이 폴더에 create-next-app을 바로 실행하면 파일 충돌로 중단된다. 사용자 기록을 삭제해서 해결하지 않는다.
 새 앱만 별도 **빈 임시 폴더**에 scaffold하고, 결과의 앱 파일을 실제 프로젝트로 검토·병합한다.
-Codex가 임시 폴더의 경로·명령을 정하며 Windows/공백/한글 경로도 인용한다. 또는 최소 package.json·앱 설정을 직접 작성한다.
-기존 PROJECT/PLAN/AGENTS/스킬/환경 파일은 보존한다. scaffold의 .gitignore는 필요한 규칙만 병합하고 .env 보호를 유지한다.
+AI가 임시 폴더의 경로·명령을 정하며 Windows/공백/한글 경로도 인용한다. 또는 최소 package.json·앱 설정을 직접 작성한다.
+기존 PROJECT/PLAN/AGENTS/CLAUDE/스킬/환경 파일은 보존한다. scaffold의 .gitignore는 필요한 규칙만 병합하고 .env 보호를 유지한다.
 scaffold의 프레임워크 AGENTS/CLAUDE 지침이 있으면 필요한 내용을 기존 규칙과 검토·병합하며 통째로 덮어쓰지 않는다.
 실제 앱 폴더의 package 이름·lockfile·설정·원격 대상이 맞는지 확인한다. 임시 scaffold의 .git/node_modules/빌드 출력은 앱 폴더에 복사하지 않는다.
 앱 폴더에서 의존성 설치·로컬 실행·빌드를 확인하고 기록한다. 검증 전에는 원본/임시 파일을 자동 삭제하지 않는다.
@@ -54,9 +54,14 @@ prepush 도우미 + 실제 diff로 .env/개인정보/키/덤프를 확인한다.
 승인된 파일만 커밋/업로드한다. 기존 배포 브랜치의 push는 실제 서비스에 영향을 줄 수 있다.
 실패 시 인증/권한/브랜치 보호/네트워크 문제를 구분한다. 강제 push나 토큰 노출로 우회하지 않는다.
 
+**GitHub 없이 직접 배포:** GitHub 가입이 부담이거나 연수처럼 시간이 짧으면 Vercel CLI로 현재 폴더를 직접 올릴 수 있다고 추천과 함께 제시한다.
+사용자가 고르면 S6.2·S6.3은 `N/A`와 합의 이유(예: "사용자와 합의: GitHub 없이 Vercel CLI로 직접 배포")를 남긴다. 업로드 대상 점검 S6.1은 생략하지 않는다.
+직접 배포에서는 `.vercelignore`로 .env·개인정보·덤프가 올라가지 않게 하고, 나중에 자동 배포가 필요하면 GitHub 연결을 다시 연다.
+
 ## 7. Vercel
 
-사용자가 로그인하고 올바른 GitHub 저장소를 선택한다. 루트 폴더·빌드 명령·환경을 확인한다.
+사용자가 로그인하고 올바른 GitHub 저장소를 선택한다(직접 배포라면 `vercel login` 후 현재 폴더를 연결한다). 루트 폴더·빌드 명령·환경을 확인한다.
+`vercel login`처럼 브라우저 로그인을 기다리는 명령은 AI 도구 안에서 멈출 수 있다. 막히면 사용자가 도구의 터미널 창(Claude Code 데스크톱은 Ctrl+`)이나 별도 터미널에서 직접 실행하게 안내하고, 로그인 뒤 이어서 진행한다.
 Preview와 Production 설정을 구분한다. 비밀값은 해당 환경의 설정에 넣고 공개 접두사 변수에 넣지 않는다.
 환경변수 변경은 이전 배포를 바꾸지 않으므로 필요한 새 배포를 실행한다.
 Supabase 인증을 쓴다면 실제 배포 주소에 맞는 Site URL/Redirect URLs와 제공자 콜백을 확인한다.

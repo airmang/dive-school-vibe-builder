@@ -1,5 +1,15 @@
 # 변경 기록
 
+## 0.3.0 — 2026-10-17
+
+- Codex와 Claude Code에서 함께 쓰도록 변경. 기본 설치가 같은 스킬을 `.agents/skills/`(Codex)와 `.claude/skills/`(Claude Code)에 함께 복사한다. `--agent codex|claude`로 한쪽만 설치할 수 있다.
+- init이 `@AGENTS.md`를 가져오는 CLAUDE.md를 만든다. 규칙은 AGENTS.md 한 곳에서 관리한다. 기존 CLAUDE.md는 덮어쓰지 않고, 가져오기 줄이 없으면 init과 check가 알린다.
+- GitHub 없이 Vercel CLI로 직접 배포하는 경로를 허용. S6.2·S6.3(GitHub 업로드)은 합의한 N/A로 둘 수 있고, 업로드 대상 점검 S6.1은 계속 필수다. 이전에는 draft 점검이 항상 막혔다.
+- 브라우저 로그인을 기다리는 `vercel login`이 AI 도구 안에서 멈출 때 터미널 창에서 직접 실행하도록 안내.
+- 점검 도구가 `.claude/` 폴더를 프로젝트 파일 검사에서 제외한다.
+- 안내 문서와 스킬 본문을 도구 중립으로 정리. 호출 형식은 Codex `$dive-webapp`, Claude Code `/dive-webapp`으로 함께 표기.
+- Claude Code 2.1.301에서 `.claude/skills` 발견, `.agents/skills` 미발견(중복 없음), CLAUDE.md의 `@AGENTS.md` 가져오기를 확인. 데스크톱 앱 Code 탭에서의 전체 흐름은 별도 리허설로 남김.
+
 ## 0.2.1 — 2026-10-05
 
 - GitHub 링크+설치 요청만으로 시작하는 SETUP 진입점과 설치 전 AGENTS 라우팅 추가. 배포물 다운로드·압축 해제도 Codex가 지원.

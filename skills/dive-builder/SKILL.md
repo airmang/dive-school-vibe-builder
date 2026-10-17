@@ -7,11 +7,12 @@ description: "개발 경험이 없어도 실제 프로젝트를 완성하도록 
 
 목표는 사용자를 가르치거나 평가하는 것이 아니라 **사용자가 원하는 것을 만들도록 개발 흐름을 돕는 것**이다.
 기본은 짧은 설명과 적극적인 실행. 상세 설명을 원할 때만 늘린다. 퀴즈·반성문·점수·배지를 요구하지 않는다.
-이것은 지시문과 로컬 점검 도구다. Codex의 권한·샌드박스 또는 DIVE 데스크톱의 실행 통제를 대신하지 않는다.
+이것은 지시문과 로컬 점검 도구다. Codex·Claude Code의 권한·샌드박스 또는 DIVE 데스크톱의 실행 통제를 대신하지 않는다.
+Codex와 Claude Code 어느 쪽에서 읽혀도 같은 절차를 따른다. 사용자에게 스킬 이름을 알려 줄 때는 지금 쓰는 도구의 형식을 쓴다(Codex `$dive-webapp`, Claude Code `/dive-webapp`).
 
 ## 매 요청의 시작
 
-현재 폴더, 기존 AGENTS.md, PROJECT.md, PLAN.md, 실행 설정과 변경 내역을 확인한다.
+현재 폴더, 기존 AGENTS.md(Claude Code는 CLAUDE.md를 거쳐 읽음), PROJECT.md, PLAN.md, 실행 설정과 변경 내역을 확인한다.
 비밀값·개인정보 원문을 대화에 출력하지 않는다. 사용자 변경을 덮어쓰지 않는다.
 
 | 요청 | 행동 |
@@ -50,6 +51,8 @@ node "SKILL_DIR/scripts/harness.mjs" init --project "PROJECT_ROOT" --name "프�
 ```
 
 PROJECT.md는 합의한 정의, PLAN.md는 유일한 진행 상태, AGENTS.md는 협업 규칙이다.
+CLAUDE.md는 `@AGENTS.md`로 같은 규칙을 Claude Code에 연결하는 파일이다. 규칙을 CLAUDE.md에 따로 복제하지 않는다.
+기존 CLAUDE.md에 `@AGENTS.md`가 없으면 사용자에게 알리고 동의를 받아 그 한 줄만 더한다.
 도구가 만든 초안은 합의가 아니다. 목표·완료 기준·작업을 실제 요구에 맞춰 편집하고 PLAN_APPROVAL을 갱신한다.
 기존 문서는 재초기화하지 않는다. 기존 AGENTS는 보존하고 제안 파일을 검토·병합한다.
 작은 오류 수정에는 문서 세트를 새로 만들지 않는다. 계획 규모는 작업 규모에 맞춘다.
@@ -58,7 +61,7 @@ PROJECT.md는 합의한 정의, PLAN.md는 유일한 진행 상태, AGENTS.md는
 
 사용자가 공유 웹앱 모드를 선택했거나 현재 PLAN의 DIVE_MODE가 webapp이면 **dive-webapp/SKILL.md를 추가로 읽는다**.
 설치된 스킬 목록에서 실제 경로를 찾는다. 표준 묶음에서는 형제 폴더 `../dive-webapp/SKILL.md`다.
-별도의 프로세스나 숨은 도구 호출이 아니다. 같은 Codex가 두 지침을 함께 읽는 구성이다.
+별도의 프로세스나 숨은 도구 호출이 아니다. 같은 AI 도구(Codex 또는 Claude Code)가 두 지침을 함께 읽는 구성이다.
 웹앱 스킬은 현재 인터뷰 답변·PROJECT·PLAN을 재사용한다. 두 번째 관리자·상태 JSON을 만들지 않는다.
 설치되지 않았다면 읽은 척하지 말고 묶음 설치를 안내한다. 범용 프로젝트는 웹앱 스킬 없이 진행 가능하다.
 새 프로젝트를 웹앱 모드로 시작할 때만 `init --mode webapp`을 쓴다.

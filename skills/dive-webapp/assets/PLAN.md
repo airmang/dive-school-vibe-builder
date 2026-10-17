@@ -99,4 +99,5 @@ S3/S4/S5 적용 여부는 저장·인증 필요에 따라 결정하고, 제외 �
 
 ## 다음 세션에 붙여넣기
 
-`$dive-builder로 이어서 작업해줘. AGENTS.md, PROJECT.md, PLAN.md와 실제 코드를 대조한 뒤 다음 미완료 단계부터 진행해줘. 미확인 작업은 완료라고 쓰지 마.`
+`$dive-webapp으로 이어서 작업해줘. AGENTS.md, PROJECT.md, PLAN.md와 실제 코드를 대조한 뒤 다음 미완료 단계부터 진행해줘. 미확인 작업은 완료라고 쓰지 마.`
+Claude Code에서는 맨 앞을 `/dive-webapp`으로 바꾼다.
